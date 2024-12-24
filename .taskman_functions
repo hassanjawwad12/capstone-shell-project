@@ -1,0 +1,100 @@
+#this is a dot file which will contain the taskman functions 
+
+#Usage: add_task "Task description"
+add_task() {
+ 
+    #I used local here to make it only function specific scope
+    local description=$1
+
+    if [[ -z "$description" ]]; then
+        echo "Kindly add the task description"
+        return 1  
+    fi
+
+    #we then generated a new task id by substituting our 2 operations and appending 1
+    local id=$(($(tail -n 1 "$TASKMAN_DIR/tasks.txt" | cut -d'|' -f1) + 1))
+    id=${id:-1}
+    echo "$id|Pending|$description" >> "$TASKMAN_DIR/tasks.txt"
+    echo "Task is successfully added: $description"
+}
+
+#Displays all tasks in the following format:
+#ID | Status | Task
+#+++++++++++++++++++++++++++++++++++++++
+#1 | Pending | Finish the report
+#2 | Done | Review the code
+list_tasks() {
+
+    if [ ! -s "$TASKMAN_DIR/tasks.txt" ]; then
+        echo "No tasks are added."
+        return
+    fi
+
+    echo "ID | Status  | Task" #first of all we print the header as in the question
+    echo "+++++++++++++++++++++++++++++++++++++++" 
+    #Then we open the file and format it 
+    cat "$TASKMAN_DIR/tasks.txt" | awk -F'|' '{printf "%-3s | %-8s| %s\n", $1, $2, $3}'
+}
+
+#I made a helper function to stop the redundancy because exact same code had to be used 
+#in complete task and delete task to verify the existence of a task before performing any action
+helper_function() {
+    local input=$1
+    if ! grep -q "^$input|" "$TASKMAN_DIR/tasks.txt"; then
+        echo "The task does not exist against this id"
+        return 1  
+    fi
+}
+
+#Usage: complete_task <Task ID>
+#Updates the status of the task to Done in tasks.txt
+complete_task(){
+    local input_id=$1  #we stored the user input
+
+     #user can only complete a task which exists 
+    if ! helper_function "$input_id"; then
+        return 1  # Exit the function if the task does not exist
+    fi
+
+    #we edit the file in-place by matching the input_id in the file
+    sed -i '' "/^$input_id|/ s/Pending/Done/" "$TASKMAN_DIR/tasks.txt"
+    echo "Task is completed"
+}
+
+#Usage: remove_task <Task ID>
+#Removes the task from tasks.txt
+remove_task() {
+    local input_id=$1
+
+     #user can only delete a task which exists 
+    if ! helper_function "$input_id"; then
+        return 1 
+    fi
+
+    #we filter the file and delete the matching line containing the id
+    sed -i '' "/^$input_id|/d" "$TASKMAN_DIR/tasks.txt"
+    echo "Task is removed."
+}
+
+#Usage: search_task "keyword"
+#Displays all tasks matching the keyword
+search_task() {
+    local user_keyword=$1
+    grep "$user_keyword" "$TASKMAN_DIR/tasks.txt" | awk -F'|' '{printf "%-3s| %-8s| %s\n", $1, $2, $3}'
+}
+
+
+#Helpers:
+#https://stackoverflow.com/questions/58781967/user-input-to-txt-file-on-a-bash-script
+#https://stackoverflow.com/questions/42987486/how-to-read-the-last-line-of-a-text-file-into-a-variable-using-bash
+#https://kodekloud.com/blog/bash-substring/#:~:text=Extract%20Substring%20in%20Bash%20Using%20the%20Cut%20Command,-The%20cut%20command&text=In%20this%20syntax%3A,a%20space%2C%20or%20a%20colon.
+#https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
+
+#https://nick3499.medium.com/bash-printf-align-left-two-place-decimal-d3f51a1872e4#:~:text=printf%20can%20be%20used%20to,left%20aligns%20strings%20and%20numbers.
+
+#^$id| is used here to match the line with start with id and followed by |
+
+#https://phoenixnap.com/kb/sed-delete-line
+
+#reload:  source /Users/hassanjawwad/Desktop/work/capstone-shell-project/.taskman_functions
+
