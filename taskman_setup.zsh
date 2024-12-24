@@ -18,5 +18,3 @@ fi
 
 export TASKMAN_DIR
 echo "TaskMan is ready to help you stay organized!"
-
-#https://phoenixnap.com/kb/zsh-environment-variables

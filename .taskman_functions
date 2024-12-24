@@ -82,19 +82,3 @@ search_task() {
     local user_keyword=$1
     grep "$user_keyword" "$TASKMAN_DIR/tasks.txt" | awk -F'|' '{printf "%-3s| %-8s| %s\n", $1, $2, $3}'
 }
-
-
-#Helpers:
-#https://stackoverflow.com/questions/58781967/user-input-to-txt-file-on-a-bash-script
-#https://stackoverflow.com/questions/42987486/how-to-read-the-last-line-of-a-text-file-into-a-variable-using-bash
-#https://kodekloud.com/blog/bash-substring/#:~:text=Extract%20Substring%20in%20Bash%20Using%20the%20Cut%20Command,-The%20cut%20command&text=In%20this%20syntax%3A,a%20space%2C%20or%20a%20colon.
-#https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
-
-#https://nick3499.medium.com/bash-printf-align-left-two-place-decimal-d3f51a1872e4#:~:text=printf%20can%20be%20used%20to,left%20aligns%20strings%20and%20numbers.
-
-#^$id| is used here to match the line with start with id and followed by |
-
-#https://phoenixnap.com/kb/sed-delete-line
-
-#reload:  source /Users/hassanjawwad/Desktop/work/capstone-shell-project/.taskman_functions
-
