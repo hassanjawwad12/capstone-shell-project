@@ -68,4 +68,10 @@ search_task "groceries"
 remove_task 2
 <h3>Output:</h3>
 Task is removed.
+
+<h3>Helper Function</h3>
+helper_function "$input_id";
+
+> [!NOTE]
+> This is not used in the command line but helps the complete task and remove task function work correctly.
      
