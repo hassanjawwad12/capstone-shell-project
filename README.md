@@ -8,3 +8,4 @@ Build a practical and reusable Zsh-based task management utility, TaskMan, that 
 * [Paramter Expansion](https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html)
 * [printf alignment](https://nick3499.medium.com/bash-printf-align-left-two-place-decimal-d3f51a1872e4#:~:text=printf%20can%20be%20used%20to,left%20aligns%20strings%20and%20numbers.)
 * [Delete a line](https://phoenixnap.com/kb/sed-delete-line)
+* [Permission codes](https://www.multacom.com/faq/password_protection/file_permissions.htm) 
