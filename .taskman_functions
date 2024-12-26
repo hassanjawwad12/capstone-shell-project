@@ -82,3 +82,5 @@ search_task() {
     local user_keyword=$1
     grep "$user_keyword" "$TASKMAN_DIR/tasks.txt" | awk -F'|' '{printf "%-3s| %-8s| %s\n", $1, $2, $3}'
 }
+
+#source /Users/hassanjawwad/Desktop/work/capstone-shell-project/.taskman_functions    
