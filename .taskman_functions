@@ -1,0 +1,83 @@
+#this is a dot file which will contain the taskman functions 
+
+add_task() {
+ 
+    local description=$1
+
+    if [[ -z "$description" ]]; then
+        echo "Kindly add the task description"
+        return 1  
+    fi
+
+    #generate a new task id by substituting our 2 operations and appending 1
+    local id=$(($(tail -n 1 "$TASKMAN_DIR/tasks.txt" | cut -d'|' -f1) + 1))
+    id=${id:-1}
+    echo "$id|Pending|$description" >> "$TASKMAN_DIR/tasks.txt"
+    echo "Task is successfully added: $description"
+}
+
+list_tasks() {
+
+    if [ ! -s "$TASKMAN_DIR/tasks.txt" ]; then
+        echo "No tasks are added."
+        return
+    fi
+
+    echo "ID | Status  | Task" 
+    echo "+++++++++++++++++++++++++++++++++++++++" 
+    #open the file and format it
+    cat "$TASKMAN_DIR/tasks.txt" | awk -F'|' '{printf "%-3s | %-8s| %s\n", $1, $2, $3}'
+}
+
+#I made a helper function to stop the redundancy because exact same code had to be used 
+#in complete task and delete task to verify the existence of a task before performing any action
+helper_function() {
+    local input=$1
+    if ! grep -q "^$input|" "$TASKMAN_DIR/tasks.txt"; then
+        echo "The task does not exist against this id"
+        return 1  
+    fi
+}
+
+complete_task(){
+    local input_id=$1  
+
+    if [[ -z "$input_id" ]]; then
+    echo "Please provide a task ID"
+    return 1  
+    fi 
+
+     #user can only complete a task which exists 
+    if ! helper_function "$input_id"; then
+        return 1  
+    fi
+
+    #we edit the file in-place by matching the input_id in the file
+    sed -i '' "/^$input_id|/ s/Pending/Done/" "$TASKMAN_DIR/tasks.txt"
+    echo "Task is completed"
+}
+
+remove_task() {
+    local input_id=$1
+
+    if [[ -z "$input_id" ]]; then
+    echo "Please provide a task ID"
+    return 1  
+    fi 
+
+    #user can only delete a task which exists 
+    if ! helper_function "$input_id"; then
+        return 1 
+    fi
+
+    #we filter the file and delete the matching line containing the id
+    sed -i '' "/^$input_id|/d" "$TASKMAN_DIR/tasks.txt"
+    echo "Task is removed."
+}
+
+search_task() {
+    local user_keyword=$1
+    grep "$user_keyword" "$TASKMAN_DIR/tasks.txt" | awk -F'|' '{printf "%-3s| %-8s| %s\n", $1, $2, $3}'
+}
+
+#source /Users/hassanjawwad/Desktop/work/capstone-shell-project/.taskman_functions    
