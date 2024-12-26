@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-#Made the env variable TASKMAN_DIR pointing to the ~/.taskman directory
+#env variable TASKMAN_DIR pointing to the ~/.taskman directory
 TASKMAN_DIR="$HOME/.taskman"
 TASKS_FILE="$TASKMAN_DIR/tasks.txt"
 
